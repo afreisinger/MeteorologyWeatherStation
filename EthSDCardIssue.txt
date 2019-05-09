@@ -1,0 +1,25 @@
+void setup() {
+    // ...
+    pinMode(SS_SD_CARD, OUTPUT);
+    pinMode(SS_ETHERNET, OUTPUT);
+    digitalWrite(SS_SD_CARD, HIGH);  // SD Card not active
+    digitalWrite(SS_ETHERNET, HIGH); // Ethernet not active
+    // ...
+}
+
+void scCardCode() {
+    // ...
+    digitalWrite(SS_SD_CARD, LOW);  // SD Card ACTIVE
+    // code that sends to the sd card slave device over SPI
+    // using SPI.transfer() etc.
+    digitalWrite(SS_SD_CARD, HIGH); // SD Card not active
+    // ...
+}
+
+void ethernetCode() {
+    // ...
+    digitalWrite(SS_ETHERNET, LOW);  // Ethernet ACTIVE
+    // code that sends to the ethernet slave device over SPI
+    // using SPI.transfer() etc.
+    digitalWrite(SS_ETHERNET, HIGH); // Ethernet not active
+    // ...

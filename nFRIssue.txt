@@ -1,0 +1,23 @@
+Hi, I should add this to the documentation, but for now here are instructions to set up softSPI, which should work with the required pins. 
+Seems strange they didn't use the hardware SPI pins for the RF24 connector, but I bet it is related to the wiznet module issue referenced in the thread linked below.
+
+SoftSPI
+
+Install the digitalIO library
+Open RF24_config.h in a text editor. Uncomment the line #define SOFTSPI
+In your sketch, add #include DigitalIO.h
+Note: Pins are listed as follows and can be modified in the RF24_config.h file
+const uint8_t SOFT_SPI_MISO_PIN = 16;
+const uint8_t SOFT_SPI_MOSI_PIN = 15;
+const uint8_t SOFT_SPI_SCK_PIN = 14;
+
+See TMRh20#24 for more info
+Even more detailed discussion at http://forum.mysensors.org/topic/466/ethernet-gateway-problem/89
+
+Re: nrf24l01 radios + RF24 library + Ethernet shield do not work together
+
+http://forum.arduino.cc/index.php?topic=200122.15
+
+http://forum.arduino.cc/index.php?topic=200122.0
+
+https://github.com/nRF24/RF24/issues/24

@@ -1,0 +1,15 @@
+now = RTC.now();
+
+logfile.print(now.unixtime()); // seconds since 1/1/1970
+logfile.print(", ");
+logfile.print(count);
+logfile.print(", ");
+logfile.print(temp);
+logfile.print(", ");
+logfile.println(hum);
+
+if ( count++ >64 )      // Este numero controla cada cuantas lecturas escribimos
+   {                    // No escribais demasiado a menudo, darle al menos 64/128
+     logfile.flush();   // Para forzar la escritura en la SD
+      count = 0 ;       
+   }

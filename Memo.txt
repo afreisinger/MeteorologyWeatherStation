@@ -1,0 +1,13 @@
+
+
+https://stackoverflow.com/questions/34170160/why-does-my-arduino-class-constructor-require-an-argument
+http://www.icce.rug.nl/documents/cplusplus/cplusplus07.html#l105
+https://aprendiendoarduino.wordpress.com/tag/clases-y-objetos/
+https://www.youtube.com/watch?v=PPsUHX6nVow&t=357s
+
+SoftSPI 
+https://github.com/nRF24/RF24/issues/24
+
+	
+MySensors Library & Examples  
+https://www.mysensors.org/apidocs/SoftSPI_8h_source.html
