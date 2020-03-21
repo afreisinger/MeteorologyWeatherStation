@@ -9,6 +9,9 @@
 *.rc
 *.sln
 *.vcxproj*
+*.vscode
+*__vm*
+*.git*
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
