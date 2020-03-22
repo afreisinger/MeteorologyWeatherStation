@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////////
 // 
-//	Adrián Freisinger, Buenos Aires(AR), August 2018
+//	Adriï¿½n Freisinger, Buenos Aires(AR), August 2018
 //  Version 1.1.8.18
 //
 // afreisinger@gmail.com
@@ -31,10 +31,7 @@
 /////////////////////////////////////////////////////////////////////////////////////
 
 
-#include "control_subrutines.h"
-#include "ether_subrutines.h"
-#include "eth_subrutines.cpp.h"
-#include "lcd_subrutines.h"
+#include <Arduino.h>
 #include <Time.h>			//Library Time.zip downloaded from http://www.pjrc.com/teensy/td_libs_Time.html
 #include <TimeLib.h>
 #include <DigitalIO.h>
@@ -42,8 +39,16 @@
 #include <Wire.h>
 #include <RTClib.h>
 #include <SPI.h>
-#include <SD.h>
-#include <SdFat.h>
+//#include <SD.h>
+//#include <SdFat.h>
+#include <LiquidCrystal.h>
+
+#include "control_subrutines.h"
+#include "ether_subrutines.h"
+#include "lcd_subrutines.h"
+
+
+
 //#include <RF24.h>
 
 
@@ -52,7 +57,7 @@
 #include "output_subrutines.h"
 #include "flashrom_subrutines.h"
 #include "flashrom_msg.h"
-#include "sd_subrutines.h"
+//#include "sd_subrutines.h"
 //#include "time_subrutines.h"
 
 
@@ -63,7 +68,7 @@
 //#define NRF24_IS_PRESENT
 
 /* uncomment next line if SD Card  is present  */
-#define SD_IS_PRESENT
+//#define SD_IS_PRESENT
 
 /* uncomment next line if LinkSprite 16x2 LCD Keypad Shield is present  */
 #define LCD16x2_IS_PRESENT
@@ -81,8 +86,13 @@
 #define ENABLE_RTC_UPDATE
 
 #if defined(ETHERNET_IS_PRESENT)
+//#include <Dhcp.h>
+//#include <Dns.h>
 #include <Ethernet.h>
+//#include <EthernetClient.h>
+//#include <EthernetServer.h>
 #include <EthernetUdp.h>
+
 /////////////////////////////////////////////////////////////////////////////////////
 // Find the nearest server
 // http://www.pool.ntp.org/zone/
@@ -153,11 +163,14 @@ bool ControlShowMe = true;
 #endif
 /////////////////////////////////////////////////////////////////////////////////////
 #if defined(DHT22_IS_PRESENT)
+#include <DHT_U.h>
 #include <DHT.h>
+
 #define TEMPERATURE_SENSOR_DHT22 1
 #define TEMPERATURE_SENSOR_PIN	42
 #define TEMPERATURE_SENSOR_TYPE DHT22
 DHT dht(TEMPERATURE_SENSOR_PIN, TEMPERATURE_SENSOR_TYPE);       // Constructor
+
 #endif
 /////////////////////////////////////////////////////////////////////////////////////
 #define TIME_SYSTEM_CLOCK              0b0000000000000001
@@ -188,7 +201,7 @@ time_t rtc_now = 0;
 time_t rtc_epoch = 0;
 tmElements_t tm;
 /////////////////////////////////////////////////////////////////////////////////////
-#define DS3231_ADDRESS 104
+#define DS3231_ADDRESS 0x68 // decimal 104
 int rtc_second;			//00-59;
 int rtc_minute;			//00-59;
 int rtc_hour;			//1-12 - 00-23;
@@ -215,11 +228,15 @@ char hum[50];
 EthernetClient ethClient;
 
 
-File webFile, configFile;               // El fichero de la pagina web en la SD card
-File dataDebugging;
-File dataLog;
-File dataFile;
-String myDataStr = "";
+
+#if defined(SD_IS_PRESENT)
+	File webFile, configFile;               // El fichero de la pagina web en la SD card
+	File dataDebugging;
+	File dataLog;
+	File dataFile;
+	
+#endif
+	String myDataStr = "";
 
 
 
@@ -290,7 +307,7 @@ void setup() {
 	lcd.createChar(2, BLOCK_3x8);			// 3/5 full block
 	lcd.createChar(3, BLOCK_4x8);			// 4/5 full block
 	lcd.createChar(4, BLOCK_5x8);			// full block
-	lcd.createChar(5, GRADO);				// º
+	lcd.createChar(5, GRADO);				// ï¿½
 	#if defined(ETHERNET_IS_PRESENT)		//wire hacking
 		pinMode(D10, OUTPUT);
 		analogWrite(D10, CONSTRAST);
@@ -1100,21 +1117,31 @@ bool checkdhcp() {
 #if defined(ADAFRUIT_ST7735_IS_PRESENT)
 		tft.println();
 #endif
-		File dataFile = SD.open("debug.log", FILE_WRITE);
-		LogToSDCard(GetTextFromFlashMemory(IP_MESSAGE) + " = ", dataFile);
 		
+		#if defined(SD_IS_PRESENT)
+			File dataFile = SD.open("debug.log", FILE_WRITE);
+			LogToSDCard(GetTextFromFlashMemory(IP_MESSAGE) + " = ", dataFile);
+		#endif
+
+
 		for (byte thisByte = 0; thisByte < 4; thisByte++) {
 			MyPrint(String(Ethernet.localIP()[thisByte], DEC));
-			LogToSDCard(String(Ethernet.localIP()[thisByte], DEC), dataFile);
+			#if defined(SD_IS_PRESENT) 
+				LogToSDCard(String(Ethernet.localIP()[thisByte], DEC), dataFile); 
+			#endif
 			
 			if (thisByte < 3) {
 				MyPrint(".");
-				LogToSDCard(".", dataFile);
+				#if defined(SD_IS_PRESENT)
+					LogToSDCard(".", dataFile);
+				#endif
 			};
 		};
 		MyPrintLn("");
-		LogToSDCard("\r\n",dataFile);
-		dataFile.close();
+		#if defined(SD_IS_PRESENT)
+			LogToSDCard("\r\n",dataFile);
+			dataFile.close();
+		#endif
 
 
 
@@ -1148,9 +1175,11 @@ bool checkdhcp() {
 		tft.println();
 #endif
 
+		
+		#if defined(SD_IS_PRESENT)
 		dataFile = SD.open("debug.log", FILE_WRITE);
 		LogToSDCard(GetTextFromFlashMemory(GATEWAY_MESSAGE) + " = ", dataFile);
-
+		#endif
 		
 		MyPrint(GetTextFromFlashMemory(GATEWAY_MESSAGE));
 		MySerialPrint(" = ");
@@ -1158,19 +1187,27 @@ bool checkdhcp() {
 		for (byte thisByte = 0; thisByte < 4; thisByte++) 
 			{
 			MyPrint(String(Ethernet.gatewayIP()[thisByte], DEC));
-			LogToSDCard(String(Ethernet.gatewayIP()[thisByte], DEC), dataFile);
+			
+			#if defined(SD_IS_PRESENT)
+				LogToSDCard(String(Ethernet.gatewayIP()[thisByte], DEC), dataFile);
+			#endif
 
 			if (thisByte < 3)
 			{
 				MyPrint(".");
+				#if defined(SD_IS_PRESENT)
 				LogToSDCard(".", dataFile);
+				#endif
 			};
 		};
 
 		;
 		MyPrintLn("");
-		LogToSDCard("\r\n", dataFile);
+		#if defined(SD_IS_PRESENT)
+			LogToSDCard("\r\n", dataFile);
 		dataFile.close();
+		#endif
+
 
 #if defined(ADAFRUIT_ST7735_IS_PRESENT)
 		tft.println();
@@ -1257,8 +1294,9 @@ void ShowTime(bool ForceShowTemperature) {//////////////////////////////////////
 				Serial.print(" ");
 				MySerialPrint(GetTextFromFlashMemory(SENSORS_MESSAGE_2));
 				MySerialPrint(ComposeTemperatureString(TEMPERATURE_SENSOR_DHT22, false) +" "+ ComposeHumedityString(TEMPERATURE_SENSOR_DHT22,false));	
-				LogToSDCard(myDataStr + ",", dataLog);
-
+				#if defined(SD_IS_PRESENT)
+					LogToSDCard(myDataStr + ",", dataLog);
+				#endif
 
 #endif
 				MySerialPrint("\r\n");

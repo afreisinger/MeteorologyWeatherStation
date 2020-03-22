@@ -3,7 +3,7 @@
 #ifndef output_subrutines
 #define output_subrutines
 
-#include "arduino.h"
+#include "Arduino.h"
 #include "LiquidCrystal.h"
 
 void MySerialPrint(String displaytext);

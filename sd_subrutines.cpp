@@ -7,6 +7,7 @@ Additionally, another pin must be used to select the SD card. This can be the ha
 or another pin specified in the call to SD.begin(). Note that even if you don't use the hardware SS pin, it must be left as an output or the SD library won't work.
 */
 // 
+
 #include <SD.h>
 #include <SdFat.h>
 
@@ -222,14 +223,14 @@ void read_sd() {
 		Serial.println("bytes");
 
 
-		//--Leemos una línea de la hoja de texto--------------
+		//--Leemos una lï¿½nea de la hoja de texto--------------
 		Serial.println("SUCCESS - Reading config.txt.");
 		while (myFile.available()) {
 
 			char c = myFile.read();
 			stringOne = stringOne + c;
 
-			if (c == 10)//ASCII de nueva de línea
+			if (c == 10)//ASCII de nueva de lï¿½nea
 			{
 				//break;
 
@@ -266,14 +267,14 @@ void read_sd() {
 				stringOne = "";
 				index++;
 				delay(1000);
-			} //end if ASCII de nueva de línea
+			} //end if ASCII de nueva de lï¿½nea
 		}
 		Serial.println();
 		//---------------------------------------------------
 		myFile.close(); //cerramos el archivo	
 	}
 	else {
-		Serial.println("ERROR - File config.txt can´t open.");
+		Serial.println("ERROR - File config.txt canï¿½t open.");
 	}
 
 }*/

@@ -58,6 +58,3 @@
 #define EMAIL_MESSAGE				55
 #define COPYRIGHT_MESSAGE			56
 #define CLEAR_MESSAGE				57
-
-
-
