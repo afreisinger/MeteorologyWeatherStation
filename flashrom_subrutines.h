@@ -1,13 +1,10 @@
 // flashrom_subrutines.h
 
-#ifndef _FLASHROM_SUBRUTINES_h
-#define _FLASHROM_SUBRUTINES_h
+#ifndef FLASHROM_SUBRUTINES_H
+#define FLASHROM_SUBRUTINES_Hh
 
-#if defined(ARDUINO) && ARDUINO >= 100
-	#include "Arduino.h"
-#else
-	#include "WProgram.h"
-#endif
+#include "Arduino.h"
+
 
 String GetTextFromFlashMemory(int ItemIndex);
 

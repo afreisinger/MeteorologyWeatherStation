@@ -34,12 +34,12 @@
 #include <Arduino.h>
 #include <Time.h>			//Library Time.zip downloaded from http://www.pjrc.com/teensy/td_libs_Time.html
 #include <TimeLib.h>
-#include <DigitalIO.h>
+//#include <DigitalIO.h>
 #include <SoftwareSerial.h>
 #include <Wire.h>
 #include <RTClib.h>
 #include <SPI.h>
-//#include <SD.h>
+#include <SD.h>
 //#include <SdFat.h>
 #include <LiquidCrystal.h>
 
@@ -57,6 +57,7 @@
 #include "output_subrutines.h"
 #include "flashrom_subrutines.h"
 #include "flashrom_msg.h"
+#include "sdlib.h"
 //#include "sd_subrutines.h"
 //#include "time_subrutines.h"
 
@@ -230,6 +231,7 @@ EthernetClient ethClient;
 
 
 #if defined(SD_IS_PRESENT)
+	
 	File webFile, configFile;               // El fichero de la pagina web en la SD card
 	File dataDebugging;
 	File dataLog;
@@ -289,7 +291,7 @@ void setup() {
 	
 	Serial.begin(BAUDRATE, SERIAL_8N1);
 
-	MySerialPrint("\r\n"+ GetTextFromFlashMemory(PROJECT_MESSAGE) + "\r\n");
+	//MySerialPrint("\r\n"+ GetTextFromFlashMemory(PROJECT_MESSAGE) + "\r\n");
 	MySerialPrint(GetTextFromFlashMemory(VERSION_MESSAGE) + "\r\n");
 	MySerialPrint(GetTextFromFlashMemory(AUTHOR_MESSAGE) + ", " + GetTextFromFlashMemory(DATE_MESSAGE) + "\r\n");
 	MySerialPrint(GetTextFromFlashMemory(EMAIL_MESSAGE) + "\r\n");
@@ -308,7 +310,7 @@ void setup() {
 	lcd.createChar(3, BLOCK_4x8);			// 4/5 full block
 	lcd.createChar(4, BLOCK_5x8);			// full block
 	lcd.createChar(5, GRADO);				// �
-	#if defined(ETHERNET_IS_PRESENT)		//wire hacking
+	#if defined(ETHERNET_IS_PRESENT)		// Wire hacking
 		pinMode(D10, OUTPUT);
 		analogWrite(D10, CONSTRAST);
 	#endif
@@ -353,27 +355,8 @@ void setup() {
 	tft.setCursor(0, 80);
 #endif
 
-
-	/*
-#if defined(ETHERNET_IS_PRESENT) || defined(DHT22_IS_PRESENT)
 	
-	for (byte index = 5; index > 0; index--) {
-		MyPrint(String(index) + " ");
-		delay(1000);
-	};
-		MyPrintLn("");
-#else
-#if defined(ADAFRUIT_ST7735_IS_PRESENT)
-	tft.fillScreen(ST7735_BLACK);
-#endif
-#endif
-	*/
-
-
-
-	
-	
-#	if defined(LCD16x2_IS_PRESENT)
+#if defined(LCD16x2_IS_PRESENT)
 	MyDisplayPrint(lcd, GetTextFromFlashMemory(PROJECT_MESSAGE), 0, 0);
 	MyDisplayPrint(lcd, GetTextFromFlashMemory(VERSION_MESSAGE), 0, 1);
 	delay(5000);
@@ -389,33 +372,36 @@ void setup() {
 	
 	
 	
-#if defined(SD_IS_PRESENT)
+//#if defined(SD_IS_PRESENT)
 
+	
+	File dataFile, dataLog;
 
 	ChipSelect(ETHERNET_CS, false);     // Ethernet not active
 	ChipSelect(SDCARD_CS, true);		// SD Card active
 
-	if (InitializingSDCard(SDCARD_CS))
-		
+	    
+	if (sdlib::InitializingSDCard(SDCARD_CS)) 			// Initializing Card
 	{
+		sdlib::InfoSDCard();							// Info SD Card
+		sdlib::SpaceOnSDCard();							// Free Space on SD Card
+		
 		SD.begin(SDCARD_CS);
 		
 		dataFile = SD.open("debug.log", FILE_WRITE);			// logfile reboot event
 		dataLog  = SD.open("datalog.dat", FILE_WRITE);			// logfile data event
 		
-		LogToSDCard("\r\n" + ComposeTimeStamp(TIME_RTC_CLOCK | TIME_FORMAT_HUMAN_SHORT, 0) + "::" + GetTextFromFlashMemory(PROJECT_MESSAGE) +"::"+ GetTextFromFlashMemory(VERSION_MESSAGE) +"::"+ GetTextFromFlashMemory(DATE_MESSAGE)+"\r\n", dataFile);
+		sdlib::LogToSDCard("\r\n" + ComposeTimeStamp(TIME_RTC_CLOCK | TIME_FORMAT_HUMAN_SHORT, 0) + "::" + GetTextFromFlashMemory(PROJECT_MESSAGE) +"::"+ GetTextFromFlashMemory(VERSION_MESSAGE) +"::"+ GetTextFromFlashMemory(DATE_MESSAGE)+"\r\n", dataFile);
 		
 		dataFile.close();
 		//dataLog.close();
 	}
 
-#else
-	// disable SD card
-	pinMode(SDCARD_CS, OUTPUT);
-	digitalWrite(SDCARD_CS, HIGH);
-#endif
-
-	
+//#else
+		// disable SD card
+		pinMode(SDCARD_CS, OUTPUT);
+		digitalWrite(SDCARD_CS, HIGH);
+//#endif
 
 }
 
@@ -554,7 +540,7 @@ time_t EvaluateDaylightsavingTime(time_t result) {
 				(hour(result) >= DAYLIGHTSAVING_START_HOUR)                      // od dvou hodin rano
 				)
 			)
-			|| (month(result) > DAYLIGHTSAVING_START_MONTH)                 // a v nasledujich mesicich
+			|| (month(result) > DAYLIGHTSAVING_START_MONTH)                 // 	
 			)
 		&&
 		(

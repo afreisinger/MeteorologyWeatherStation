@@ -70,13 +70,15 @@ const char TextInfo47[] PROGMEM = "Volume size (Kb):  ";
 const char TextInfo48[] PROGMEM = "Volume size (Mb):  ";
 const char TextInfo49[] PROGMEM = "Volume size (Gb):  ";
 const char TextInfo50[] PROGMEM = "\nFiles found on the card (name, date and size in bytes): ";
-const char TextInfo51[] PROGMEM = "Wheater Station";
-const char TextInfo52[] PROGMEM = "Version 1.1.8.18";
-const char TextInfo53[] PROGMEM = "August 2018";
-const char TextInfo54[] PROGMEM = "Adrian Freisinger";
-const char TextInfo55[] PROGMEM = "afreisinger@gmail.com";
-const char TextInfo56[] PROGMEM = "Everyone is permitted to copy and distribute verbatim copies of this license document, but changing it is not allowed.\n";
-const char TextInfo57[] PROGMEM = "                ";
+const char TextInfo51[] PROGMEM = "Free space in (Mb): ";
+const char TextInfo52[] PROGMEM = "Wheater Station";
+const char TextInfo53[] PROGMEM = "Version 1.1.8.18";
+const char TextInfo54[] PROGMEM = "August 2018";
+const char TextInfo55[] PROGMEM = "Adrian Freisinger";
+const char TextInfo56[] PROGMEM = "afreisinger@gmail.com";
+const char TextInfo57[] PROGMEM = "Everyone is permitted to copy and distribute verbatim copies of this license document, but changing it is not allowed.\n";
+const char TextInfo58[] PROGMEM = "                ";
+const char TextInfo59[] PROGMEM = "";
 
 
 const char* const TextItemPointers[] PROGMEM = {
@@ -85,7 +87,7 @@ const char* const TextItemPointers[] PROGMEM = {
 	TextInfo20,TextInfo21,TextInfo22,TextInfo23,TextInfo24,TextInfo25,TextInfo26,TextInfo27,TextInfo28,TextInfo29,
 	TextInfo30,TextInfo31,TextInfo32,TextInfo33,TextInfo34,TextInfo35,TextInfo36,TextInfo37,TextInfo38,TextInfo39,
 	TextInfo40,TextInfo41,TextInfo42,TextInfo43,TextInfo44,TextInfo45,TextInfo46,TextInfo47,TextInfo48,TextInfo49,
-	TextInfo50,TextInfo51,TextInfo52,TextInfo53,TextInfo54,TextInfo55,TextInfo56, TextInfo57
+	TextInfo50,TextInfo51,TextInfo52,TextInfo53,TextInfo54,TextInfo55,TextInfo56,TextInfo57,TextInfo58,TextInfo58
 };
 
 String GetTextFromFlashMemory(int ItemIndex)
